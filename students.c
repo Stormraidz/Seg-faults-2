@@ -31,20 +31,18 @@
  *   id - an integer ID for the student
  *   gpa - the student's GPA
  */
-void init_student(struct student* student, char* name, int id, float gpa) {
-	struct student newStudent;							//Initializes a new student struct
-											//Finds the number of elements by dividing the bit size of "name" by the bit size of a character
-	char* nameCopy = malloc(sizeof(name));						//Allocates memory for Character vector
+void init_student(struct student* student, char* name, int id, float gpa) {							//Initializes a new student struct
+	student->name = malloc(sizeof(name));										//Finds the number of elements by dividing the bit size of "name" by the bit size of a character										//Allocates memory for Character vector
 	for( int i = 0; name[i] != 0; i++)						//Copies the individual elements of the character vector to the new character vector
 	{
-		nameCopy[i] = name[i];
-	};										// Copies float
+		student->name[i] = name[i];
+	}										// Copies float
 											// Assigns the copy's values to the struct
-	newStudent.id = id;								// Assigns the copy's values to the struct
-	newStudent.gpa = gpa;								// Assigns the copy's values to the struct
-	newStudent.name = nameCopy;
-	student = &newStudent;							// Pass by reference: assigns the addrees of the struct to the struct pointer
+	student->id = id;								// Assigns the copy's values to the struct
+	student->gpa = gpa;								// Assigns the copy's values to the structr
+	printf("made through");
 }
+
 
 
 /*
@@ -83,18 +81,21 @@ void free_student(struct student* student) {
  *   using a combination of free_student() and free().
  */
 struct student* deep_copy_student(struct student* student) {
-	struct student deepStudent;
-	deepStudent.id = student->id;
-	deepStudent.gpa = student->gpa;
-	deepStudent.name = malloc(sizeof(student->name));
-	for (int i = 0; student->name != 0; i++)
+	
+	/*struct student* deepStudent = malloc(sizeof(student));
+	printf("new1");
+	int tempId = student->id;
+	printf("new");
+	float tempGpa = student->gpa;
+	char* string = malloc(sizeof(student->name));
+	for(int i = 0; student->name[i] != 0; i++)
 	{
-		char nameptr= student->name[i];
-		deepStudent.name[i] = nameptr;
+		string[i] = student->name[i];
 	}
-	struct student* deepCopy = malloc(sizeof(struct student));
-	deepCopy = &deepStudent;
-	return deepCopy;
+	deepStudent->id = tempId;
+	deepStudent->gpa = tempGpa;
+	deepStudent->name = string;*/
+	return NULL;
 }
 
 
@@ -128,7 +129,7 @@ struct student* create_student_array(int num_students, char** names, int* ids, f
 	struct student *students = malloc( num_students * sizeof(struct student));
 	for (int i = 0; i < num_students; i++)
 	{
-		init_student(students, names[i], ids[i], gpas[i]);
+		//init_student(students, names[i], ids[i], gpas[i]);
 	}
   return students;
 }
@@ -162,17 +163,9 @@ void print_students(struct student* students, int num_students) {
 
 	for (int i = 1; i <= num_students; i++)
 	{
-		int size = (sizeof(students[i].name)/sizeof(char));
-		printf("Name- ");
-		for( int j = 0; j < size; j++)
-		{
-			char letter = students[i].name[j];
-			printf("%d", letter);											// Print tag
-		}
-		int tempId = students[i].id;
-		float tempGpa = students[i].gpa;
-		printf(" ID - %d", tempId);
-		printf(" Gpa - %d \n", tempGpa);											// Print Id and Gpa
+		printf("Name- %s, ", students[i].name);												// Print tag
+		printf(" ID - %d, ", students[i].id);
+		printf(" Gpa - %f \n", students[i].gpa);											// Print Id and Gpa
 	}
 }
 
@@ -193,23 +186,22 @@ void print_students(struct student* students, int num_students) {
  *   should not make a copy of the student being returned.
  */
 struct student* find_max_gpa(struct student* students, int num_students) {
-	int size = sizeof(students)/sizeof(struct student);							// Find the size of the Student struct aray students
-	int locate;																	// location variable to hold the value of the counter with the max gpa
-	for (int i = 0; i < size; i++)												// This loop holds the value of the highest gpa seen 
-	{
-		float maxGpa;															// This variable holds the highest gpa seen
-		float tempGpa = students[i].gpa;										// This grabs the gpa of the student in the struct at this point
-		if (i = 0)																// Sets the first student's gpa as the max gpa
-			{
-				float maxGpa = tempGpa;											
-			}
-		if (tempGpa > maxGpa)													//Replaces the max gpa if this student's gpa is higher
+	int locate;
+	float maxGpa;										// location variable to hold the value of the counter with the max gpa
+	for (int i = 0; ; i++)									// This loop holds the value of the highest gpa seen 
+	{											// This variable holds the highest gpa seen
+		float tempGpa = students[i].gpa;						// This grabs the gpa of the student in the struct at this point
+		if (i == 0)									// Sets the first student's gpa as the max gpa
+		{
+			float maxGpa = tempGpa;											
+		}
+		if (tempGpa > maxGpa)								//Replaces the max gpa if this student's gpa is higher
 		{
 			maxGpa = tempGpa;
 			locate = i;
 		}
 	}
-	return &students[locate];													//returns address to the student pointer with max gpa
+	return &students[locate];								//returns address to the student pointer with max gpa
 }
 
 
@@ -231,11 +223,11 @@ struct student* find_max_gpa(struct student* students, int num_students) {
 struct student* find_min_gpa(struct student* students, int num_students) {
 	int size = sizeof(students)/sizeof(struct student);							// Find the size of the Student struct aray
 	int locate;
+	float n;
 	for (int i = 0; i < size; i++)
 	{
-		float n;
 		float tempGpa = students[i].gpa;
-		if (i = 0)
+		if (i == 0)
 			{
 				float n = tempGpa;
 			}
@@ -279,7 +271,7 @@ void sort_by_gpa(struct student* students, int num_students) {
 		}
 		for (int i = 0; i <= num_students; i++)					// This loop checks to see if the list array is fully sorted by gpa or not
 		{
-			if (i = num_students)				// If the list is sorted (makes it hrough all comparisons it breaks the loop allowing it to leave the function
+			if (i == num_students)				// If the list is sorted (makes it hrough all comparisons it breaks the loop allowing it to leave the function
 			{
 				j = 1;
 				break;
